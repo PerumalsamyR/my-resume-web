@@ -2,12 +2,14 @@
 working_docker: &working_docker
   docker:
     - image: circleci/node:10-browsers
+working_directory: &working_directory
+  working_director: ~/project
 
 version: 2.1
 jobs:
   Install_Depencies:
     # pre-built images: https://circleci.com/docs/2.0/circleci-images/
-    <<: [*working_docker]
+    <<: [*working_docker, *working_directory]
     steps:
       - checkout
       - run:
@@ -19,9 +21,9 @@ jobs:
       - run:
           name: Building Production build
           command: yarn build
-          
+
 workflows:
- version: 2.1
- Main_Workflow:
-   jobs:
-     - buildProject
+  version: 2.1
+  Main_Workflow:
+    jobs:
+      - Install_Depencies
