@@ -1,10 +1,13 @@
 # Use the latest 2.1 version of CircleCI pipeline processing engine, see https://circleci.com/docs/2.0/configuration-reference/
+working_docker: &working_docker
+  docker:
+    - image: circleci/node:10-browsers
+
 version: 2.1
 jobs:
-  buildProject:
+  Install_Depencies:
     # pre-built images: https://circleci.com/docs/2.0/circleci-images/
-    docker:
-      - image: circleci/node:10-browsers
+    <<: [*working_docker]
     steps:
       - checkout
       - run:
