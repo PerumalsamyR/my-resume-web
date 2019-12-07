@@ -20,6 +20,11 @@ persist_unit_test_coverage_step: &persist_unit_test_coverage_step
     root: "."
     paths: ["./.coverage"]
 
+persist_build_artifacts_step: &persist_build_artifacts_step
+  persist_to_workspace:
+    root: "."
+    paths: ["./build"]
+
 view_project_structure_step: &view_project_structure_step
   run:
     name: Look Around project structure
@@ -28,7 +33,7 @@ view_project_structure_step: &view_project_structure_step
 
 version: 2.1
 jobs:
-  Install_dependencies:
+  install_dependencies:
     <<: [*working_docker, *working_directory]
     steps:
       - checkout
@@ -46,7 +51,7 @@ jobs:
           command: yarn build
       - *persist_install_depedencies_step
 
-  Frontend_static_analysis:
+  frontend_static_analysis:
     <<: [*working_docker, *working_directory]
     steps:
       - *attach_workspace_step
@@ -54,21 +59,32 @@ jobs:
           name: "Run EsLint Static Analysis"
           command: yarn lint
 
-  Unit_tests:
+  unit_tests:
     <<: [*working_docker, *working_directory]
     steps:
       - *attach_workspace_step
       - run:
           name: "Run unit tests"
-          command: yarn test --runInBand --coverage
+          command: yarn test:coverage
       - *persist_unit_test_coverage_step
+
+  build_artifacts:
+    <<: [*working_docker, *working_directory]
+    steps:
+      - *attach_workspace_step
+      - run:
+          name: Building Production build
+          command: yarn build
+      - *persist_build_artifacts_step
 
 workflows:
   version: 2.1
   Main_Workflow:
     jobs:
-      - Install_dependencies
-      - Frontend_static_analysis:
-          requires: [Install_dependencies]
-      - Unit_tests:
-          requires: [Install_dependencies]
+      - install_dependencies
+      - frontend_static_analysis:
+          requires: [install_dependencies]
+      - unit_tests:
+          requires: [install_dependencies]
+      - build_artifacts:
+          requires: [frontend_static_analysis, unit_tests]

@@ -20,6 +20,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "set CI=true && react-scripts test --coverage",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.{tsx,ts,js,jsx} --max-warnings 5",
     "size": "yarn build && size-limit"
