@@ -18,7 +18,7 @@ persist_install_depedencies_step: &persist_install_depedencies_step
 persist_unit_test_coverage_step: &persist_unit_test_coverage_step
   persist_to_workspace:
     root: "."
-    paths: ["./.coverage"]
+    paths: ["./coverage"]
 
 persist_build_artifacts_step: &persist_build_artifacts_step
   persist_to_workspace:
