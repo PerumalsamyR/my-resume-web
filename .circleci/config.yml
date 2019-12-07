@@ -2,8 +2,9 @@
 working_docker: &working_docker
   docker:
     - image: circleci/node:10-browsers
+    
 working_directory: &working_directory
-  working_director: ~/project
+  working_directory: ~/project
 
 version: 2.1
 jobs:
