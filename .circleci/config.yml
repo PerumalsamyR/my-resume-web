@@ -44,7 +44,6 @@ jobs:
       - run:
           name: Building Production build
           command: yarn build
-      - *view_project_structure_step
       - *persist_install_depedencies_step
 
   Frontend_static_analysis:
@@ -62,7 +61,6 @@ jobs:
       - run:
           name: "Run unit tests"
           command: yarn test --runInBand --coverage
-      - *view_project_structure_step
       - *persist_unit_test_coverage_step
 
 workflows:
