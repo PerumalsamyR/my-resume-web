@@ -51,17 +51,17 @@ jobs:
     <<: [*working_docker, *working_directory]
     steps:
       - *attach_workspace_step
-      -run:
-        name: 'Run EsLint Static Analysis'
-        command: yarn lint
+      - run:
+          name: "Run EsLint Static Analysis"
+          command: yarn lint
 
   Unit_tests:
     <<: [*working_docker, *working_directory]
     steps:
       - *attach_workspace_step
-      -run:
-        name: 'Run unit tests'
-        command: yarn test --runInBand --coverage
+      - run:
+          name: "Run unit tests"
+          command: yarn test --runInBand --coverage
       - *view_project_structure_step
       - *persist_unit_test_coverage_step
 
