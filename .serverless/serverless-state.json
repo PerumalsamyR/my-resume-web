@@ -1,0 +1,292 @@
+{
+  "service": {
+    "service": "MyResumeWeb-UI",
+    "serviceObject": {
+      "name": "MyResumeWeb-UI"
+    },
+    "provider": {
+      "stage": "dev",
+      "variableSyntax": "\\${([ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)*?]+?)}",
+      "name": "aws",
+      "runtime": "nodejs8.10",
+      "profile": "",
+      "region": "us-east-2",
+      "deploymentBucket": "my-resume-web-ui",
+      "stackTags": {
+        "App": "MyResumeWeb"
+      },
+      "versionFunctions": true,
+      "remoteFunctionData": null,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "CDN": {
+            "Type": "AWS::CloudFront::Distribution",
+            "Properties": {
+              "DistributionConfig": {
+                "Origins": [
+                  {
+                    "DomainName": {
+                      "Fn::GetAtt": [
+                        "AssetsBucket",
+                        "DomainName"
+                      ]
+                    },
+                    "Id": "S3-myresumeweb-dev",
+                    "S3OriginConfig": {
+                      "OriginAccessIdentity": {
+                        "Fn::Join": [
+                          "identity",
+                          [
+                            "origin-access-identity/cloudfront/",
+                            {
+                              "ref": "WebAppOriginAccessIdentity"
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "Enabled": true,
+                "HttpVersion": "http2",
+                "Aliases": "dev.perumalsamyravindran.com",
+                "DefaultRootObject": "index.html",
+                "CustomErrorResponses": [
+                  {
+                    "ErrorCode": 404,
+                    "ResponseCOde": 200,
+                    "ResponsePagePath": "/index.html"
+                  },
+                  {
+                    "ErrorCode": 403,
+                    "ResponseCOde": 200,
+                    "ResponsePagePath": "/index.html"
+                  }
+                ],
+                "DefaultCacheBehavior": {
+                  "AllowedMethods": [
+                    "DELETE",
+                    "GET",
+                    "HEAD",
+                    "OPTIONS",
+                    "PATCH",
+                    "PUT",
+                    "POST"
+                  ],
+                  "TargetOriginId": "S3-myresumeweb-ui-dev",
+                  "ForwardedValues": {
+                    "QueryString": "false",
+                    "Cookies": {
+                      "Forward": "none"
+                    }
+                  },
+                  "ViewerProtocolPolicy": "redirect-to-https"
+                },
+                "PriceClass": "PriceClass_100",
+                "ViewerCertificate": {
+                  "AcmCertificateArn": "_c998e863025381982f71d89d62462fce.perumalsamyravindran.com.",
+                  "SslSupportMethod": "sni-only",
+                  "MinimumProtocolVersion": "TLSv1.2_2018"
+                }
+              }
+            }
+          },
+          "DomainRoute53Alias": {
+            "Type": "AWS::Route53::RecordSet",
+            "Properties": {
+              "AliasTarget": {
+                "DNSName": {
+                  "Fn::GetAtt": [
+                    "CDN",
+                    "DomainName"
+                  ]
+                },
+                "EvaluateTargetHealth": false,
+                "HostedZoneId": "Z1L54LN66G8GZE",
+                "HostedZoneName": "perumalsamyravindran.com.",
+                "Name": "S3-myresumeweb-ui-Arecord-dev",
+                "Type": "A"
+              }
+            }
+          },
+          "AssetsBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketName": "my-resume-web-Ui-dev"
+            }
+          },
+          "WebAppOriginAccessIdentity": {
+            "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+            "Properties": {
+              "CloudFrontOriginAccessIdentityConfig": {
+                "Comment": "This is identity config string"
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "my-resume-web-ui"
+          },
+          "CDNDistributionId": {
+            "Description": "CDN distribution id.",
+            "Value": {
+              "Ref": "CDN"
+            }
+          }
+        }
+      }
+    },
+    "custom": {
+      "websiteBucketName": "my-resume-web-Ui-dev",
+      "syncS3": [
+        {
+          "bucketName": "my-resume-web-Ui-dev",
+          "localDir": "build"
+        }
+      ],
+      "cloudfrontInvalidate": {
+        "distributionIdKey": "CDNDistributionId",
+        "items": [
+          "/index.html"
+        ]
+      },
+      "customDomainMap": {
+        "dev": "dev.perumalsamyravindran.com",
+        "test": "test.perumalsamyravindran.com",
+        "beta": "beta.perumalsamyravindran.com",
+        "prod": "perumalsamyravindran.com"
+      }
+    },
+    "plugins": [
+      "serverless-s3-sync",
+      "serverless-cloudfront-invalidate"
+    ],
+    "pluginsData": {},
+    "functions": {},
+    "resources": {
+      "Resources": {
+        "CDN": {
+          "Type": "AWS::CloudFront::Distribution",
+          "Properties": {
+            "DistributionConfig": {
+              "Origins": [
+                {
+                  "DomainName": {
+                    "Fn::GetAtt": [
+                      "AssetsBucket",
+                      "DomainName"
+                    ]
+                  },
+                  "Id": "S3-myresumeweb-dev",
+                  "S3OriginConfig": {
+                    "OriginAccessIdentity": {
+                      "Fn::Join": [
+                        "identity",
+                        [
+                          "origin-access-identity/cloudfront/",
+                          {
+                            "ref": "WebAppOriginAccessIdentity"
+                          }
+                        ]
+                      ]
+                    }
+                  }
+                }
+              ],
+              "Enabled": true,
+              "HttpVersion": "http2",
+              "Aliases": "dev.perumalsamyravindran.com",
+              "DefaultRootObject": "index.html",
+              "CustomErrorResponses": [
+                {
+                  "ErrorCode": 404,
+                  "ResponseCOde": 200,
+                  "ResponsePagePath": "/index.html"
+                },
+                {
+                  "ErrorCode": 403,
+                  "ResponseCOde": 200,
+                  "ResponsePagePath": "/index.html"
+                }
+              ],
+              "DefaultCacheBehavior": {
+                "AllowedMethods": [
+                  "DELETE",
+                  "GET",
+                  "HEAD",
+                  "OPTIONS",
+                  "PATCH",
+                  "PUT",
+                  "POST"
+                ],
+                "TargetOriginId": "S3-myresumeweb-ui-dev",
+                "ForwardedValues": {
+                  "QueryString": "false",
+                  "Cookies": {
+                    "Forward": "none"
+                  }
+                },
+                "ViewerProtocolPolicy": "redirect-to-https"
+              },
+              "PriceClass": "PriceClass_100",
+              "ViewerCertificate": {
+                "AcmCertificateArn": "_c998e863025381982f71d89d62462fce.perumalsamyravindran.com.",
+                "SslSupportMethod": "sni-only",
+                "MinimumProtocolVersion": "TLSv1.2_2018"
+              }
+            }
+          }
+        },
+        "DomainRoute53Alias": {
+          "Type": "AWS::Route53::RecordSet",
+          "Properties": {
+            "AliasTarget": {
+              "DNSName": {
+                "Fn::GetAtt": [
+                  "CDN",
+                  "DomainName"
+                ]
+              },
+              "EvaluateTargetHealth": false,
+              "HostedZoneId": "Z1L54LN66G8GZE",
+              "HostedZoneName": "perumalsamyravindran.com.",
+              "Name": "S3-myresumeweb-ui-Arecord-dev",
+              "Type": "A"
+            }
+          }
+        },
+        "AssetsBucket": {
+          "Type": "AWS::S3::Bucket",
+          "Properties": {
+            "BucketName": "my-resume-web-Ui-dev"
+          }
+        },
+        "WebAppOriginAccessIdentity": {
+          "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+          "Properties": {
+            "CloudFrontOriginAccessIdentityConfig": {
+              "Comment": "This is identity config string"
+            }
+          }
+        }
+      },
+      "Outputs": {
+        "CDNDistributionId": {
+          "Description": "CDN distribution id.",
+          "Value": {
+            "Ref": "CDN"
+          }
+        }
+      }
+    },
+    "serviceFilename": "serverless.yml",
+    "layers": {}
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/MyResumeWeb-UI/dev/1575812217315-2019-12-08T13:36:57.315Z",
+    "artifact": ""
+  }
+}
